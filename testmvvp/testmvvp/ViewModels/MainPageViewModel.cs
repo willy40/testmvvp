@@ -10,7 +10,6 @@ namespace I2CCompass.ViewModels
 {
     public class MainPageViewModel : BindableBase
     {
-        private int? _testLocal;
         private ICompass _compass;
         private CompassReading? _compassReading;
 
