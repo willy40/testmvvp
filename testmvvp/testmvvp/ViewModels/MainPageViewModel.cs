@@ -11,6 +11,7 @@ namespace I2CCompass.ViewModels
     public class MainPageViewModel : BindableBase
     {
         private ICompass _compass;
+
         private CompassReading? _compassReading;
 
         private DelegateCommand _startContinuousMeasurementsCommand;
