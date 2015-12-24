@@ -13,6 +13,7 @@ namespace I2CCompass.ViewModels
         private ICompass _compass;
         private CompassReading? _compassReading;
 
+        private DelegateCommand _sendpacketCommand;
         private DelegateCommand _startContinuousMeasurementsCommand;
         private DelegateCommand _takeSingleMeasurementCommand;
         private DelegateCommand _stopCompassCommand;
