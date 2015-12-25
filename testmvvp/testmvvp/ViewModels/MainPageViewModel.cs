@@ -23,8 +23,6 @@ namespace I2CCompass.ViewModels
                 throw new ArgumentNullException(nameof(compass));
             }
 
-            MyProperty = "Test";
-
             _compass = compass;
             _compass.CompassReadingChangedEvent += async (e, cr) =>
             {
