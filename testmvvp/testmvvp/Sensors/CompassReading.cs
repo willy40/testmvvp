@@ -1,4 +1,4 @@
-﻿namespace I2CCompass.Sensors
+﻿namespace testmvvp.Sensors
 {
     public struct CompassReading
     {

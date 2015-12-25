@@ -1,14 +1,13 @@
-﻿using I2CCompass.Sensors;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Mvvm;
-using System;
-using System.Windows.Input;
-using testmvvp.Sensors;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-
-namespace I2CCompass.ViewModels
+﻿namespace testmvvp.ViewModels
 {
+    using System;
+    using Sensors;
+    using Microsoft.Practices.Prism.Commands;
+    using Microsoft.Practices.Prism.Mvvm;
+    using System.Windows.Input;
+    using Windows.ApplicationModel.Core;
+    using Windows.UI.Core;
+
     public class MainPageViewModel : BindableBase
     {
         private IRFM12BDevice _rfmDevice;
@@ -17,6 +16,7 @@ namespace I2CCompass.ViewModels
 
         private DelegateCommand _startCommand;
         private DelegateCommand _stopCommand;
+        private bool IsStarted { get; set; }
 
         public MainPageViewModel(IRFM12BDevice rfm12Device)
         {
@@ -35,22 +35,24 @@ namespace I2CCompass.ViewModels
                 async () =>
                 {
                     await _rfmDevice.Start();
+                    IsStarted = true;
                     UpdateCommands();
                 },
                 () =>
                 {
-                    return true;
+                    return !IsStarted;
                 });
 
             _stopCommand = new DelegateCommand(
                 async () =>
                 {
                     await _rfmDevice.Start();
+                    IsStarted = false;
                     UpdateCommands();
                 },
                 () =>
                 {
-                    return true;
+                    return IsStarted;
                 });
         }
 

@@ -1,9 +1,8 @@
-﻿using I2CCompass.Sensors;
-using System;
-using System.Threading.Tasks;
-
-namespace testmvvp.Sensors
+﻿namespace testmvvp.Sensors
 {
+    using System;
+    using System.Threading.Tasks;
+
     public interface IRFM12BDevice
     {
         event EventHandler<CompassReading> CompassReadingChangedEvent;

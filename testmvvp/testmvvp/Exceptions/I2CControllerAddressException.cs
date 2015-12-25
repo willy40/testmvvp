@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace I2CCompass
+﻿namespace I2CCompass
 {
+    using System;
+
     public class I2CControllerAddressException : Exception
     {
         public I2CControllerAddressException(int address, string deviceId)

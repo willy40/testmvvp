@@ -1,10 +1,7 @@
 ﻿namespace testmvvp.Sensors
 {
-    using I2CCompass.Sensors;
+    using Enums;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Windows.Devices.Enumeration;
     using Windows.Devices.Gpio;
@@ -14,12 +11,14 @@
     {
         private const byte SPI_CHIP_SELECT_LINE = 0;        /* Chip select line to use*/
         private const string SPI_CONTROLLER_NAME = "SPI0";
+
         private GpioPin _irqPin;
         private SpiDevice _spiRfm;
 
         private byte[] _rfmCmdReadBuffer = new byte[2];
         private byte[] _rfmCmdWriteBuffer = new byte[2];
         private byte[] _spiRWBffer = new byte[127];
+
         private int _spiBuferPos = 0;
 
         public bool IsInitialized
@@ -102,6 +101,12 @@
             return ret;
         }
 
+        private bool RFMDataArrived()
+        {
+            ushort stat = RF12Cmd(0x0000);
+            return (stat & (ushort)RF12Status.RFM12_STATUS_FFIT) > 0;
+        }
+
         private void InitIrq()
         {
             var gpio = GpioController.GetDefault();
@@ -119,7 +124,32 @@
 
         private void Pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
-            throw new NotImplementedException();
+            if (args.Edge == GpioPinEdge.FallingEdge)
+            {
+                do
+                {
+                    if (RFMDataArrived())
+                    {
+                        sender.ValueChanged -= Pin_ValueChanged;
+                        if (_spiBuferPos > 127)
+                        {
+                            RfmResetFiFo();
+                            _spiBuferPos = 0;
+                        }
+                        else
+                        {
+                            ushort data = RF12Cmd(0xb000);
+                            _spiRWBffer[_spiBuferPos] = (byte)(data & 0x00ff);
+                            _spiBuferPos++;
+                        }
+                    }
+                } while (_spiBuferPos < 12);
+
+                sender.ValueChanged += Pin_ValueChanged;
+                RfmResetFiFo();
+
+                string result = System.Text.Encoding.ASCII.GetString(_spiRWBffer, 2, 4);
+            }
         }
-       }
+    }
 }

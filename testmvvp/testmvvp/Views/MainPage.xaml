@@ -37,10 +37,10 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="1" Text="HMC5883L Magnetometer" Foreground="#FFE8D6D6" />
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Command="{Binding TakeSingleMeasurementCommand}" Content="Start"  />
-            <Button Command="{Binding StopCompassCommand}" Content="Stop"  />
+            <Button Command="{Binding StartCommend}" Content="Start"  />
+            <Button Command="{Binding StopCommand}" Content="Stop"  />
         </StackPanel>
-        <TextBlock Grid.Row="3" Text="{Binding MyProperty, Converter={StaticResource headingConverter}}" Height="86" VerticalAlignment="Bottom">
+        <TextBlock Grid.Row="3" Text="{Binding CompassReading, Converter={StaticResource headingConverter}}" Height="86" VerticalAlignment="Bottom">
         </TextBlock>
     </Grid>
 </Page>
