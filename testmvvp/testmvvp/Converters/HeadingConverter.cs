@@ -1,10 +1,10 @@
-﻿using I2CCompass.Sensors;
-using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-
-namespace I2CCompass.Converters
+﻿namespace I2CCompass.Converters
 {
+    using System;
+    using testmvvp.Sensors;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Data;
+
     public class HeadingConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

@@ -1,75 +1,64 @@
-﻿using I2CCompass.Sensors;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Mvvm;
-using System;
-using System.Windows.Input;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-
-namespace I2CCompass.ViewModels
+﻿namespace testmvvp.ViewModels
 {
+    using System;
+    using Sensors;
+    using Microsoft.Practices.Prism.Commands;
+    using Microsoft.Practices.Prism.Mvvm;
+    using System.Windows.Input;
+    using Windows.ApplicationModel.Core;
+    using Windows.UI.Core;
+
     public class MainPageViewModel : BindableBase
     {
-        private ICompass _compass;
-        private CompassReading? _compassReading;
-        private DelegateCommand _startContinuousMeasurementsCommand;
-        private DelegateCommand _takeSingleMeasurementCommand;
-        private DelegateCommand _stopCompassCommand;
+        private IRFM12BDevice _rfmDevice;
 
-        public MainPageViewModel(ICompass compass)
+        private CompassReading? _compassReading;
+
+        private DelegateCommand _startCommand;
+        private DelegateCommand _stopCommand;
+        private bool IsStarted { get; set; }
+
+        public MainPageViewModel(IRFM12BDevice rfm12Device)
         {
-            if (compass == null)
+            if (rfm12Device == null)
             {
-                throw new ArgumentNullException(nameof(compass));
+                throw new ArgumentNullException(nameof(rfm12Device));
             }
 
-            MyProperty = "Test";
-
-            _compass = compass;
-            _compass.CompassReadingChangedEvent += async (e, cr) =>
+            _rfmDevice = rfm12Device;
+            _rfmDevice.CompassReadingChangedEvent += async (e, cr) =>
             {
                 await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { CompassReading = cr; });
             };
 
-            _startContinuousMeasurementsCommand = DelegateCommand.FromAsyncHandler(
+            _startCommand = DelegateCommand.FromAsyncHandler(
                 async () =>
                 {
-                    await _compass.SetModeAsync(MagnetometerMeasurementMode.Continuous);
+                    await _rfmDevice.Start();
+                    IsStarted = true;
                     UpdateCommands();
                 },
                 () =>
                 {
-                    return _compass.MeasurementMode != MagnetometerMeasurementMode.Continuous;
+                    return !IsStarted;
                 });
 
-            _takeSingleMeasurementCommand = DelegateCommand.FromAsyncHandler(
+            _stopCommand = new DelegateCommand(
                 async () =>
                 {
-                    await _compass.SetModeAsync(MagnetometerMeasurementMode.Single);
+                    await _rfmDevice.Start();
+                    IsStarted = false;
                     UpdateCommands();
                 },
                 () =>
                 {
-                    return _compass.MeasurementMode != MagnetometerMeasurementMode.Continuous;
-                });
-
-            _stopCompassCommand = new DelegateCommand(
-                async () =>
-                {
-                    await _compass.SetModeAsync(MagnetometerMeasurementMode.Idle);
-                    UpdateCommands();
-                },
-                () =>
-                {
-                    return _compass.MeasurementMode == MagnetometerMeasurementMode.Continuous;
+                    return IsStarted;
                 });
         }
 
-        public ICommand StartContinuousMeasurementsCommand { get { return _startContinuousMeasurementsCommand; } }
+        public ICommand StartCommand { get { return _startCommand; } }
 
-        public ICommand TakeSingleMeasurementCommand { get { return _takeSingleMeasurementCommand; } }
-
-        public ICommand StopCompassCommand { get { return _stopCompassCommand; } }
+        public ICommand StopCommand { get { return _stopCommand; } }
 
         public CompassReading CompassReading
         {
@@ -77,13 +66,10 @@ namespace I2CCompass.ViewModels
             set { SetProperty(ref _compassReading, value); }
         }
 
-        public string MyProperty { get; set; }
-
         private void UpdateCommands()
         {
-            _startContinuousMeasurementsCommand.RaiseCanExecuteChanged();
-            _takeSingleMeasurementCommand.RaiseCanExecuteChanged();
-            _stopCompassCommand.RaiseCanExecuteChanged();
+            _startCommand.RaiseCanExecuteChanged();
+            _stopCommand.RaiseCanExecuteChanged();
         }
     }
 }
