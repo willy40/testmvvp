@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using testmvvp.Sensors;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -27,7 +28,7 @@ namespace testmvvp.Views
         public MainPage()
         {
             this.InitializeComponent();
-            DataContext = new MainPageViewModel(new HMC5883L());
+            DataContext = new MainPageViewModel(new RFM12BDevice());
         }
     }
 }
