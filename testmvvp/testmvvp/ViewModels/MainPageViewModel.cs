@@ -40,7 +40,7 @@
                 },
                 () =>
                 {
-                    return !IsStarted;
+                    return true;
                 });
 
             _stopCommand = new DelegateCommand(
@@ -52,7 +52,7 @@
                 },
                 () =>
                 {
-                    return IsStarted;
+                    return true;
                 });
         }
 

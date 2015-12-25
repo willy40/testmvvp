@@ -11,7 +11,6 @@
             <Setter Property="FontSize" Value="20" />
             <Setter Property="Margin" Value="10" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="FontSize" Value="20" />
@@ -37,8 +36,8 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="1" Text="HMC5883L Magnetometer" Foreground="#FFE8D6D6" />
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Command="{Binding StartCommend}" Content="Start"  />
-            <Button Command="{Binding StopCommand}" Content="Stop"  />
+            <Button Command="{Binding StartCommand}" Content="Start" Foreground="#ffffffff" Background="#33633B3B"  Margin="10,10,10,9.667"  />
+            <Button Command="{Binding StopCommand}" Content="Stop"  Foreground="#ffffffff" Background="#33633B3B"/>
         </StackPanel>
         <TextBlock Grid.Row="3" Text="{Binding CompassReading, Converter={StaticResource headingConverter}}" Height="86" VerticalAlignment="Bottom">
         </TextBlock>
