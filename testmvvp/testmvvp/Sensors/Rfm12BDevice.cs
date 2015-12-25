@@ -2,6 +2,7 @@
 {
     using Enums;
     using System;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using Windows.Devices.Enumeration;
     using Windows.Devices.Gpio;
@@ -126,6 +127,7 @@
         {
             if (args.Edge == GpioPinEdge.FallingEdge)
             {
+                long StartingTime = Stopwatch.GetTimestamp();
                 do
                 {
                     if (RFMDataArrived())
@@ -135,6 +137,7 @@
                         {
                             RfmResetFiFo();
                             _spiBuferPos = 0;
+                            break;
                         }
                         else
                         {
@@ -148,6 +151,10 @@
                 sender.ValueChanged += Pin_ValueChanged;
                 RfmResetFiFo();
 
+                long EndingTime = Stopwatch.GetTimestamp();
+                long ElapsedTime = EndingTime - StartingTime;
+
+                double ElapsedSeconds = ElapsedTime * (1.0 / Stopwatch.Frequency);
                 string result = System.Text.Encoding.ASCII.GetString(_spiRWBffer, 2, 4);
             }
         }

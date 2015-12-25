@@ -26,6 +26,8 @@
             }
 
             _rfmDevice = rfm12Device;
+            _rfmDevice.Start();
+
             _rfmDevice.CompassReadingChangedEvent += async (e, cr) =>
             {
                 await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { CompassReading = cr; });
