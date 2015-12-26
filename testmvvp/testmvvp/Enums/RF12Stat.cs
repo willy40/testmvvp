@@ -1,6 +1,6 @@
 ﻿namespace testmvvp.Enums
 {
-    enum RF12Status
+    enum RF12Status : ushort
     {
         RFM12_CMD_STATUS = 0x0000,
         RFM12_STATUS_RGIT = 0x8000,

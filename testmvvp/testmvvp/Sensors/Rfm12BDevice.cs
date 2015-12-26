@@ -2,6 +2,7 @@
 {
     using Enums;
     using System;
+    using System.Linq;
     using System.Diagnostics;
     using System.Threading.Tasks;
     using Windows.Devices.Enumeration;
@@ -20,7 +21,13 @@
         private byte[] _rfmCmdWriteBuffer = new byte[2];
         private byte[] _spiRWBffer = new byte[127];
 
-        private int _spiBuferPos = 0;
+        private volatile int _spiBuferPos = 0;
+
+
+        double[] buftime = new double[300];
+
+        long EndingTime = 0;
+        long StartingTime = 0;
 
         public bool IsInitialized
         {
@@ -105,7 +112,7 @@
         private bool RFMDataArrived()
         {
             ushort stat = RF12Cmd(0x0000);
-            return (stat & (ushort)RF12Status.RFM12_STATUS_FFIT) > 0;
+            return (stat & (ushort)RF12Status.RFM12_STATUS_FFIT) == (ushort)RF12Status.RFM12_STATUS_FFIT;
         }
 
         private void InitIrq()
@@ -125,38 +132,61 @@
 
         private void Pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
+
             if (args.Edge == GpioPinEdge.FallingEdge)
             {
-                long StartingTime = Stopwatch.GetTimestamp();
+                StartingTime = Stopwatch.GetTimestamp();
+                sender.ValueChanged -= Pin_ValueChanged;
+
                 do
                 {
                     if (RFMDataArrived())
                     {
-                        sender.ValueChanged -= Pin_ValueChanged;
                         if (_spiBuferPos > 127)
                         {
                             RfmResetFiFo();
-                            _spiBuferPos = 0;
-                            break;
+                            sender.ValueChanged += Pin_ValueChanged;
+                            return;
                         }
                         else
                         {
                             ushort data = RF12Cmd(0xb000);
                             _spiRWBffer[_spiBuferPos] = (byte)(data & 0x00ff);
+
+                            MesureTime();
+
                             _spiBuferPos++;
                         }
                     }
+                    //else
+                    //{
+                    //    //RfmResetFiFo();
+                    //    sender.ValueChanged += Pin_ValueChanged;
+                    //    return;
+                    //}
+
                 } while (_spiBuferPos < 12);
 
-                sender.ValueChanged += Pin_ValueChanged;
                 RfmResetFiFo();
+                sender.ValueChanged += Pin_ValueChanged;
 
-                long EndingTime = Stopwatch.GetTimestamp();
-                long ElapsedTime = EndingTime - StartingTime;
+                //EndingTime = Stopwatch.GetTimestamp();
+                //ElapsedTime = EndingTime - StartingTime;
 
-                double ElapsedSeconds = ElapsedTime * (1.0 / Stopwatch.Frequency);
+                //ElapsedSeconds = ElapsedTime * (1.0 / Stopwatch.Frequency);
                 string result = System.Text.Encoding.ASCII.GetString(_spiRWBffer, 2, 4);
+                for(int i=0; i<127; i++)
+                {
+                    _spiRWBffer[i] = 0;
+                }
             }
+        }
+
+        private void MesureTime()
+        {
+            EndingTime = Stopwatch.GetTimestamp();
+            buftime[_spiBuferPos] = (EndingTime - StartingTime) * (1.0 / Stopwatch.Frequency);
+            StartingTime = EndingTime;
         }
     }
 }
