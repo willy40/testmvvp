@@ -2,11 +2,11 @@
 {
     public struct CompassReading
     {
-        public CompassReading(double heading)
+        public CompassReading(string heading)
         {
             Heading = heading;
         }
 
-        public double Heading { get; }
+        public string Heading { get; }
     }
 }

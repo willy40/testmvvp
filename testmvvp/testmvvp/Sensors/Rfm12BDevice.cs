@@ -158,27 +158,22 @@
                             _spiBuferPos++;
                         }
                     }
-                    //else
-                    //{
-                    //    //RfmResetFiFo();
-                    //    sender.ValueChanged += Pin_ValueChanged;
-                    //    return;
-                    //}
+                    else
+                    {
+                        //RfmResetFiFo();
+                        sender.ValueChanged += Pin_ValueChanged;
+                        return;
+                    }
 
                 } while (_spiBuferPos < 12);
 
                 RfmResetFiFo();
-                sender.ValueChanged += Pin_ValueChanged;
-
-                //EndingTime = Stopwatch.GetTimestamp();
-                //ElapsedTime = EndingTime - StartingTime;
-
-                //ElapsedSeconds = ElapsedTime * (1.0 / Stopwatch.Frequency);
                 string result = System.Text.Encoding.ASCII.GetString(_spiRWBffer, 2, 4);
-                for(int i=0; i<127; i++)
+                if (CompassReadingChangedEvent != null)
                 {
-                    _spiRWBffer[i] = 0;
+                    CompassReadingChangedEvent(this, new CompassReading(result));
                 }
+                sender.ValueChanged += Pin_ValueChanged;
             }
         }
 
