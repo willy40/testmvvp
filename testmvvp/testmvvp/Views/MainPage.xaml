@@ -6,40 +6,35 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Page.Resources>
-        <Style TargetType="Button">
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Margin" Value="10" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Margin" Value="10" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="64" />
-            <Setter Property="Margin" Value="10" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
-        </Style>
-        <c:HeadingConverter x:Key="headingConverter" />
-    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="1" Text="HMC5883L Magnetometer" Foreground="#FFE8D6D6" />
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Command="{Binding StartCommand}" Content="Start" Foreground="#ffffffff" Background="#33633B3B"  Margin="10,10,10,9.667"  />
-            <Button Command="{Binding StopCommand}" Content="Stop"  Foreground="#ffffffff" Background="#33633B3B"/>
-        </StackPanel>
-        <TextBlock Grid.Row="3" Text="{Binding CompassReading, Converter={StaticResource headingConverter}}" Height="86" VerticalAlignment="Bottom">
-        </TextBlock>
+        <Image Grid.RowSpan="2" Source="ms-appx:///Assets/818418.jpg" Stretch="Fill"/>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Name="Lbl_Time" HorizontalAlignment="Center" FontSize="100" Foreground="#efff" Text="Binding">0.00 AM</TextBlock>
+        </Grid>
+        <Frame Name="Frame_Main" Margin="20"/>
+        <Border Grid.Row="1" Background="#D000" HorizontalAlignment="Right" Width="1024" Opacity="0.9">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Btn_Home"  Grid.Column="0" Margin="30" Height="64" Source="Resources/Image/Home/Home_Icon_150.png"/>
+                <Image Name="Btn_ShowRooms"  Grid.Column="1" Margin="30"  Height="64" Source="Resources/Image/Home/Icon_Room_150.png"/>
+                <Image Name="Btn_ShowConfiguration" Grid.Column="5" Margin="30"  Height="64" Source="Resources/Image/Home/Icon_Settings_150.png"/>
+
+            </Grid>
+        </Border>
     </Grid>
 </Page>

@@ -26,7 +26,7 @@
             }
 
             _rfmDevice = rfm12Device;
-            _rfmDevice.Start();
+            //_rfmDevice.Start();
 
             _rfmDevice.CompassReadingChangedEvent += async (e, cr) =>
             {

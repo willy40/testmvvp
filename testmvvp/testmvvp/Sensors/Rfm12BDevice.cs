@@ -15,11 +15,14 @@
         private const string SPI_CONTROLLER_NAME = "SPI0";
 
         private GpioPin _irqPin;
+        private GpioPin _testPin;
+
         private SpiDevice _spiRfm;
 
         private byte[] _rfmCmdReadBuffer = new byte[2];
         private byte[] _rfmCmdWriteBuffer = new byte[2];
         private byte[] _spiRWBffer = new byte[127];
+        private ushort _dataReceived=0;
 
         private volatile int _spiBuferPos = 0;
 
@@ -48,7 +51,7 @@
             if (!IsInitialized)
             {
                 var settings = new SpiConnectionSettings(SPI_CHIP_SELECT_LINE);
-                settings.ClockFrequency = 2500000;   /* 0.25MHz clock rate                                        */
+                settings.ClockFrequency = 125000;   /* 0.25MHz clock rate                                        */
                 settings.Mode = SpiMode.Mode0;      /* The ADC expects idle-low clock polarity so we use Mode0  */
                 settings.DataBitLength = 8;
 
@@ -57,8 +60,8 @@
                 _spiRfm = await SpiDevice.FromIdAsync(deviceInfo[0].Id, settings);
 
                 Rfm12BInit();
-                RfmResetFiFo();
                 InitIrq();
+                RfmResetFiFo();
 
                 IsInitialized = true;
             }
@@ -125,9 +128,13 @@
             }
 
             _irqPin = GpioController.GetDefault().OpenPin(25);
+            _testPin = GpioController.GetDefault().OpenPin(21);
+
             _irqPin.DebounceTimeout = new TimeSpan(0, 0, 0, 0, 0);
-            _irqPin.SetDriveMode(GpioPinDriveMode.Input);
+            _irqPin.SetDriveMode(GpioPinDriveMode.InputPullDown);
             _irqPin.ValueChanged += Pin_ValueChanged;
+
+            _testPin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         private void Pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
@@ -150,20 +157,26 @@
                         }
                         else
                         {
-                            ushort data = RF12Cmd(0xb000);
-                            _spiRWBffer[_spiBuferPos] = (byte)(data & 0x00ff);
+                            _dataReceived = RF12Cmd(0xb000);
+                            //bitbang on pin 21
+                            _testPin.Write(GpioPinValue.High);
+                            //System.Threading.Tasks.Task.Delay(1000);
+                            _testPin.Write(GpioPinValue.Low);
 
-                            MesureTime();
+                            _spiRWBffer[_spiBuferPos] = (byte)(_dataReceived & 0x00ff);
+                //            for (long i = 0; i < 12000; i++) ;
 
+                            //MesureTime();
                             _spiBuferPos++;
                         }
                     }
-                    else
-                    {
-                        //RfmResetFiFo();
-                        sender.ValueChanged += Pin_ValueChanged;
-                        return;
-                    }
+                    //else
+                    //{
+                    //    sender.ValueChanged += Pin_ValueChanged;
+                    //    return;
+                    //}
+
+                    //System.Threading.Tasks.Task.Delay(15);
 
                 } while (_spiBuferPos < 12);
 
