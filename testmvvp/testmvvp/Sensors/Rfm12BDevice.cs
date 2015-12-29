@@ -51,7 +51,7 @@
             if (!IsInitialized)
             {
                 var settings = new SpiConnectionSettings(SPI_CHIP_SELECT_LINE);
-                settings.ClockFrequency = 125000;   /* 0.25MHz clock rate                                        */
+                settings.ClockFrequency = 250000;   /* 0.25MHz clock rate                                        */
                 settings.Mode = SpiMode.Mode0;      /* The ADC expects idle-low clock polarity so we use Mode0  */
                 settings.DataBitLength = 8;
 
@@ -139,11 +139,10 @@
 
         private void Pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
-
             if (args.Edge == GpioPinEdge.FallingEdge)
             {
-                StartingTime = Stopwatch.GetTimestamp();
                 sender.ValueChanged -= Pin_ValueChanged;
+                StartingTime = Stopwatch.GetTimestamp();
 
                 do
                 {
@@ -158,21 +157,19 @@
                         else
                         {
                             _dataReceived = RF12Cmd(0xb000);
+
                             //bitbang on pin 21
                             _testPin.Write(GpioPinValue.High);
-                            //System.Threading.Tasks.Task.Delay(1000);
                             _testPin.Write(GpioPinValue.Low);
 
                             _spiRWBffer[_spiBuferPos] = (byte)(_dataReceived & 0x00ff);
-                //            for (long i = 0; i < 12000; i++) ;
-
-                            //MesureTime();
                             _spiBuferPos++;
                         }
                     }
                     //else
                     //{
                     //    sender.ValueChanged += Pin_ValueChanged;
+                    //    //RfmResetFiFo();
                     //    return;
                     //}
 
@@ -182,6 +179,10 @@
 
                 RfmResetFiFo();
                 string result = System.Text.Encoding.ASCII.GetString(_spiRWBffer, 2, 4);
+
+  //              EndingTime = Stopwatch.GetTimestamp();
+  //              double se = (EndingTime - StartingTime) * (1.0 / Stopwatch.Frequency);
+
                 if (CompassReadingChangedEvent != null)
                 {
                     CompassReadingChangedEvent(this, new CompassReading(result));
@@ -194,7 +195,7 @@
         {
             EndingTime = Stopwatch.GetTimestamp();
             buftime[_spiBuferPos] = (EndingTime - StartingTime) * (1.0 / Stopwatch.Frequency);
-            StartingTime = EndingTime;
+            //StartingTime = EndingTime;
         }
     }
 }

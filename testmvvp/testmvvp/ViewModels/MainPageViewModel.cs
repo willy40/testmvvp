@@ -20,13 +20,15 @@
 
         public MainPageViewModel(IRFM12BDevice rfm12Device)
         {
+            _compassReading = new CompassReading("0.0");
+
             if (rfm12Device == null)
             {
                 throw new ArgumentNullException(nameof(rfm12Device));
             }
 
             _rfmDevice = rfm12Device;
-            //_rfmDevice.Start();
+            _rfmDevice.Start();
 
             _rfmDevice.CompassReadingChangedEvent += async (e, cr) =>
             {

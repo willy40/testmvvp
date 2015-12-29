@@ -14,12 +14,12 @@
         <Image Grid.RowSpan="2" Source="ms-appx:///Assets/818418.jpg" Stretch="Fill"/>
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.RowDefinitions>
-                <RowDefinition/>
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBlock Name="Lbl_Time" HorizontalAlignment="Center" FontSize="100" Foreground="#efff" Text="Binding">0.00 AM</TextBlock>
+            <TextBlock Name="Lbl_Time" HorizontalAlignment="Center" FontSize="100" Foreground="#efff" Text="{Binding CompassReading}" Margin="0" Width="560">0.00</TextBlock>
         </Grid>
         <Frame Name="Frame_Main" Margin="20"/>
-        <Border Grid.Row="1" Background="#D000" HorizontalAlignment="Right" Width="1024" Opacity="0.9">
+        <Border Grid.Row="1" Background="#D000" Opacity="0.9" HorizontalAlignment="Left" Width="1120">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
