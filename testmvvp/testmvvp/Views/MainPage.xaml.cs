@@ -1,6 +1,6 @@
 ﻿namespace testmvvp.Views
 {
-    using testmvvp.Sensors;
+    using Classes;
     using ViewModels;
     using Windows.UI.Xaml.Controls;
 
@@ -12,7 +12,7 @@
         public MainPage()
         {
             this.InitializeComponent();
-            DataContext = new MainPageViewModel(new RFM12BDevice());
+            DataContext = new MainPageViewModel(new RFDevice());
         }
     }
 }

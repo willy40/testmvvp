@@ -1,16 +1,14 @@
 ﻿namespace testmvvp.ViewModels
 {
-    using System;
-    using Sensors;
     using Microsoft.Practices.Prism.Commands;
     using Microsoft.Practices.Prism.Mvvm;
     using System.Windows.Input;
-    using Windows.ApplicationModel.Core;
-    using Windows.UI.Core;
+    using Classes.Interfaces;
+    using Classes;
 
     public class MainPageViewModel : BindableBase
     {
-        private IRFM12BDevice _rfmDevice;
+        private IRFDevice _rfDevice;
 
         private CompassReading? _compassReading;
 
@@ -18,27 +16,25 @@
         private DelegateCommand _stopCommand;
         private bool IsStarted { get; set; }
 
-        public MainPageViewModel(IRFM12BDevice rfm12Device)
+        public MainPageViewModel(IRFDevice rfDevice)
         {
             _compassReading = new CompassReading("0.0");
-
-            if (rfm12Device == null)
+            if(rfDevice==null)
             {
-                throw new ArgumentNullException(nameof(rfm12Device));
+                throw new System.Exception("Cannot create RFM Device");
             }
 
-            _rfmDevice = rfm12Device;
-            _rfmDevice.Start();
+            _rfDevice = rfDevice;
 
-            _rfmDevice.CompassReadingChangedEvent += async (e, cr) =>
-            {
-                await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { CompassReading = cr; });
-            };
+            //_rfmcontrol.CompassReadingChangedEvent += async (e, cr) =>
+            //{
+            //    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { CompassReading = cr; });
+            //};
 
             _startCommand = DelegateCommand.FromAsyncHandler(
                 async () =>
                 {
-                    await _rfmDevice.Start();
+                    await rfDevice.Start();
                     IsStarted = true;
                     UpdateCommands();
                 },
@@ -50,7 +46,7 @@
             _stopCommand = new DelegateCommand(
                 async () =>
                 {
-                    await _rfmDevice.Start();
+                    await rfDevice.Stop();
                     IsStarted = false;
                     UpdateCommands();
                 },

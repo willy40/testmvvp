@@ -1,11 +1,11 @@
-﻿namespace I2CCompass
+﻿namespace SPIExceptptions
 {
     using System;
 
-    public class I2CControllerAddressException : Exception
+    public class GpioException : Exception
     {
-        public I2CControllerAddressException(int address, string deviceId)
-            : base(string.Format("The address {0} on I2C Controller {1} is currently in use.", address, deviceId))
+        public GpioException()
+            : base("GPIO does not exist on the current system.")
         { }
     }
 }

@@ -18,7 +18,6 @@
             </Grid.RowDefinitions>
             <TextBlock Name="Lbl_Time" HorizontalAlignment="Center" FontSize="100" Foreground="#efff" Text="{Binding CompassReading}" Margin="0" Width="560">0.00</TextBlock>
         </Grid>
-        <Frame Name="Frame_Main" Margin="20"/>
         <Border Grid.Row="1" Background="#D000" Opacity="0.9" HorizontalAlignment="Left" Width="1120">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -29,10 +28,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
-                <Image Name="Btn_Home"  Grid.Column="0" Margin="30" Height="64" Source="Resources/Image/Home/Home_Icon_150.png"/>
-                <Image Name="Btn_ShowRooms"  Grid.Column="1" Margin="30"  Height="64" Source="Resources/Image/Home/Icon_Room_150.png"/>
-                <Image Name="Btn_ShowConfiguration" Grid.Column="5" Margin="30"  Height="64" Source="Resources/Image/Home/Icon_Settings_150.png"/>
+                <Button Command="{Binding StartCommand}" Content="Take Single Measurement" Margin="240,622,0,234" Height="100" Width="261" Foreground="#FFFBF7F7" />
+                <Button Command="{Binding StopCommand}" Content="Start Continuous Measurements" Margin="640,614,0,226" Height="116" Width="333" Foreground="#FFF0DDDD" />
 
             </Grid>
         </Border>

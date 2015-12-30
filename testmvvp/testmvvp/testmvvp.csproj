@@ -101,16 +101,22 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\HeadingConverter.cs" />
-    <Compile Include="Enums\RF12Stat.cs" />
+    <Compile Include="Enums\RF12Status.cs" />
+    <Compile Include="Enums\RFMState.cs" />
     <Compile Include="Exceptions\I2CControllerAddressException.cs" />
-    <Compile Include="Exceptions\I2CControllerFoundException.cs" />
-    <Compile Include="Sensors\IRFM12BDevice.cs" />
-    <Compile Include="Sensors\RFM12BDevice.cs" />
+    <Compile Include="Exceptions\SPIControllerFoundException.cs" />
+    <Compile Include="Classes\BaseCRC16.cs" />
+    <Compile Include="Classes\Interfaces\IRFDevice.cs" />
+    <Compile Include="Classes\Interfaces\IRFMControl.cs" />
+    <Compile Include="Classes\Interfaces\IRFMPacket.cs" />
+    <Compile Include="Classes\RFM12BDevice.cs" />
+    <Compile Include="Classes\RFMControl.cs" />
+    <Compile Include="Classes\RFMPacket.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sensors\CompassReading.cs" />
+    <Compile Include="Classes\CompassReading.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

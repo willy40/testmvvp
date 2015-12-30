@@ -1,4 +1,4 @@
-﻿namespace testmvvp.Sensors
+﻿namespace testmvvp.Classes
 {
     public struct CompassReading
     {

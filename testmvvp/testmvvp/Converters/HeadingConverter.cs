@@ -1,7 +1,7 @@
 ﻿namespace I2CCompass.Converters
 {
     using System;
-    using testmvvp.Sensors;
+    using testmvvp.Classes;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Data;
 
