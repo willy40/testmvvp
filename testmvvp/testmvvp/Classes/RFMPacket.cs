@@ -7,7 +7,6 @@
     public class RFMPacket : BaseCRC16, IRFMPacket
     {
         private IList<byte> _buffer;
-
         private byte _header;
         private byte _dataLength;
 
@@ -19,6 +18,7 @@
             }
             set
             {
+                _header = value;
                 _crc = crc16_update(_crc, value);
             }
         }
