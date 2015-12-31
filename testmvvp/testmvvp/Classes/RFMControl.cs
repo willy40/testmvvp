@@ -116,9 +116,9 @@
             IrqState = RF12IrqState.Crc_HightByte;
         }
 
-        private bool RFMDataArrived()
+        private bool RFMDataArrived(ushort stat)
         {
-            ushort stat = RF12Cmd(0x0000);
+            
             return (stat & (ushort)RF12Status.RFM12_STATUS_FFIT) == (ushort)RF12Status.RFM12_STATUS_FFIT;
         }
 
@@ -208,6 +208,9 @@
         private void Pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
             IRFMPacket tmpRfmPacket = null;
+            long ticks = 0;
+
+            ushort stat = RF12Cmd(0x0000);
 
             if (args.Edge == GpioPinEdge.FallingEdge)
             {
@@ -216,17 +219,23 @@
 
                 do
                 {
-                    if (RFMDataArrived())
+                    if (RFMDataArrived(stat))
                     {
                         ProcessData(ref tmpRfmPacket);
                     }
-
-                    MesureTimeOut();
-                    if (_irqTimeout > 0.07)
+                    else
                     {
-                        BreakReading();
                         return;
+                        //Task.Delay(TimeSpan.FromMilliseconds(0.1));
+                        //ticks++;
                     }
+                    //MesureTimeOut();
+
+                    //if (_irqTimeout > 7)
+                    //{
+                    //    BreakReading();
+                    //    return;
+                    //}
 
                 } while (DataToRead > 0);
 
@@ -318,7 +327,9 @@
 
         private void MesureTimeOut()
         {
-            _irqTimeout = (Stopwatch.GetTimestamp() - _startingTime) * _frqScaleFactor;
+            long endTime = Stopwatch.GetTimestamp();
+            _irqTimeout = ( endTime- _startingTime) * _frqScaleFactor;
+            //_startingTime = endTime;
         }
 
         private void BreakReading()
